@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/6LmVu4P.png" alt="Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "Which Spanish-language series about a bank heist became a global hit?", answer: "Money Heist (La Casa de Papel)" },
+            { question: "What German sci-fi thriller series involves time travel and a small town's secrets?", answer: "Dark" },
+            { question: "What French mystery thriller series stars Omar Sy as a modern-day gentleman thief?", answer: "Lupin" },
+            { question: "Which South Korean series became a worldwide sensation for its deadly children's games?", answer: "Squid Game" },
+            { question: "What is the name of the Israeli political thriller series that inspired 'Homeland'?", answer: "Prisoners of War (Hatufim)" },
+            { question: "Which Mexican series tells the story of the rise and fall of drug lord Miguel Ángel Félix Gallardo?", answer: "Narcos: Mexico" },
+            { question: "What French animated series is about a group of misfit teenagers turned into superheroes?", answer: "Miraculous: Tales of Ladybug & Cat Noir" },
+            { question: "Which Japanese anime series is set in a dystopian world where Titans devour humans?", answer: "Attack on Titan" },
+            { question: "What Danish political drama series is centered around the life of Denmark's first female Prime Minister?", answer: "Borgen" },
+            { question: "What Spanish series follows a high school class where several murders take place?", answer: "Elite" },
+            { question: "Which Brazilian series tells the story of a group of teens who discover supernatural powers?", answer: "Invisible City (Cidade Invisível)" },
+            { question: "What South Korean historical drama follows a zombie outbreak during the Joseon Dynasty?", answer: "Kingdom" },
+            { question: "Which Italian crime series follows the lives of mafia families in Naples?", answer: "Gomorrah" },
+            { question: "Which Norwegian series focuses on Norse mythology and modern-day gods?", answer: "Ragnarok" },
+            { question: "What Spanish series revolves around a secret school for troubled teenagers?", answer: "The Boarding School (El Internado)" },
+            { question: "Which Colombian series tells the story of the rise of drug kingpin Pablo Escobar?", answer: "Narcos" },
+            { question: "What Japanese series features contestants battling for survival in a mysterious alternate Tokyo?", answer: "Alice in Borderland" },
+            { question: "What French crime drama series stars Audrey Fleurot as a brilliant lawyer turned rogue investigator?", answer: "Spiral (Engrenages)" },
+            { question: "What Brazilian series explores the lives of a group of teenagers in an elite school, focusing on racial and economic inequality?", answer: "Sintonia" },
+            { question: "What German series is about the birth of the first criminal investigator in the Weimar Republic?", answer: "Babylon Berlin" },
+            { question: "Which Korean series follows a rich heir and a stuntwoman who get stranded together in North Korea?", answer: "Crash Landing on You" },
+            { question: "Which Mexican series explores the lives of people involved in drug cartels and the Mexican drug war?", answer: "Queen of the South (La Reina del Sur)" },
+            { question: "What Israeli psychological thriller follows a therapist and her patients?", answer: "In Therapy (BeTipul)" },
+            { question: "What South Korean legal drama features a brilliant but anti-social lawyer?", answer: "Stranger" },
+            { question: "Which Italian series focuses on the story of four women who try to rebuild their lives after World War II?", answer: "My Brilliant Friend (L'Amica Geniale)" },
+            { question: "What is the name of the Spanish-language Netflix series that is a reboot of a Mexican telenovela about elite soccer players?", answer: "The Club" },
+            { question: "Which Argentinian series follows a teenager who becomes involved in a murder investigation?", answer: "El Marginal" },
+            { question: "Which Japanese series centers around an office worker who moonlights as a vigilante assassin?", answer: "Giri/Haji" },
+            { question: "What Brazilian dystopian thriller involves a competition where only 3% of the population can join the elite?", answer: "3%" },
+            { question: "What French-language series follows a brilliant but conflicted surgeon trying to save her dying brother?", answer: "The Mantis (La Mante)" },
+            { question: "Which South Korean series features a high school for aspiring idols?", answer: "Dream High" },
+            { question: "What Mexican series is about the drug wars of the 1980s?", answer: "Narcos: Mexico" },
+            { question: "Which Chinese series is set in a fictional world of martial arts and rival factions?", answer: "The Untamed" },
+            { question: "What Indian series tells the story of a police officer pursuing a notorious gangster in Mumbai?", answer: "Sacred Games" },
+            { question: "Which Turkish series revolves around a time-traveling historian who discovers her family's secrets?", answer: "The Protector" },
+            { question: "What Spanish-language series follows a girl who uncovers the dark side of a prestigious boarding school?", answer: "Cable Girls (Las Chicas del Cable)" },
+            { question: "Which French detective series follows a priest and a doctor solving supernatural crimes?", answer: "The Bonfire of Destiny (Le Bazar de la Charité)" },
+            { question: "What Danish series is about a former soldier investigating a conspiracy within the Danish government?", answer: "Warrior (Kriger)" },
+            { question: "What Japanese series features the intense mental and psychological battles between high school students?", answer: "Kakegurui" },
+            { question: "What Spanish-language fantasy series is set in a world where magic is real?", answer: "The Barrier (La Valla)" },
+            { question: "Which German thriller is about a young woman with a deadly secret?", answer: "Perfume" },
+            { question: "Which Japanese drama follows a group of young women competing in a reality show?", answer: "Terrace House" },
+            { question: "What Korean series features a mysterious monster that terrorizes the residents of a Seoul apartment building?", answer: "Sweet Home" },
+            { question: "Which South Korean drama features a love triangle between a soldier, a doctor, and their fates?", answer: "Descendants of the Sun" },
+            { question: "What Brazilian series tells the story of an aspiring DJ and his journey to success?", answer: "Brotherhood" },
+            { question: "What French science fiction series involves a group of survivors in a post-apocalyptic world?", answer: "Ad Vitam" },
+            { question: "Which Spanish drama series follows the rivalry between two leading matadors?", answer: "Toro" },
+            { question: "What South Korean series follows a group of students who discover a ghost in their school?", answer: "The School Nurse Files" },
+            { question: "Which German-language series explores a dystopian future where people compete for survival?", answer: "Tribes of Europa" },
+            { question: "What Spanish thriller series follows a group of thieves in a high-security facility?", answer: "Locked Up (Vis a Vis)" }
+        ];
+
+        document.getElementById('quizImage').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
+            const question = questionsAndAnswers[randomIndex].question;
+            const answer = questionsAndAnswers[randomIndex].answer;
+
+            document.getElementById('question').textContent = question;
+            document.getElementById('answer').textContent = answer;
+        });
+    </script>
+</body>
+</html>
